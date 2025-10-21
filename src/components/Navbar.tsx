@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 
 export function Navbar() {
-  const { user, storagedUser, logout } = useAuth();
+  const { user, storagedUser, logout, isLoading } = useAuth();
   const router = useRouter();
 
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
   };
 
   const currentUser = user || storagedUser;
@@ -37,9 +41,10 @@ export function Navbar() {
               variant="outline"
               size="sm"
               onClick={handleLogout}
-              className="border-secondary-foreground text-secondary-foreground hover:bg-secondary-foreground hover:text-secondary bg-transparent"
+              disabled={isLoading}
+              className="border-secondary-foreground text-secondary-foreground hover:bg-secondary-foreground hover:text-secondary bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ArrowLeft /> Sair
+              <ArrowLeft /> {isLoading ? "Saindo..." : "Sair"}
             </Button>
           </div>
         </div>
