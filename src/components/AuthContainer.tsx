@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "@/components/LoginForm";
+import { Button } from "@/components/ui/button";
 import { RegisterForm } from "@/components/RegisterForm";
+import { Logo } from "@/components/Logo";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export function AuthContainer() {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,37 +20,58 @@ export function AuthContainer() {
     setIsLogin(!isLogin);
   };
 
+  const renderFooterActions = () => {
+    return (
+      <div className="mt-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          {isLogin ? "Não tem uma conta?" : "Já tem uma conta?"}
+        </p>
+        <Button
+          variant="link"
+          onClick={toggleMode}
+          className="text-primary hover:text-primary/80"
+        >
+          {isLogin ? "Criar conta" : "Fazer login"}
+        </Button>
+      </div>
+    );
+  };
+
+  const renderCardHeader = () => {
+    return (
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold text-foreground">
+          {isLogin ? "Entrar" : "Criar Conta"}
+        </CardTitle>
+      </CardHeader>
+    );
+  };
+  const renderLogo = () => {
+    return (
+      <div className="mb-8 flex justify-center">
+        <Logo />
+      </div>
+    );
+  };
+
+  const renderCardContent = () => {
+    return (
+      <CardContent>{isLogin ? <LoginForm /> : <RegisterForm />}</CardContent>
+    );
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            {isLogin ? "Entrar" : "Criar Conta"}
-          </CardTitle>
-          <CardDescription>
-            {isLogin 
-              ? "Entre com sua conta para continuar" 
-              : "Crie uma nova conta para começar"
-            }
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLogin ? <LoginForm /> : <RegisterForm />}
-          
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              {isLogin ? "Não tem uma conta?" : "Já tem uma conta?"}
-            </p>
-            <Button
-              variant="link"
-              onClick={toggleMode}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              {isLogin ? "Criar conta" : "Fazer login"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-secondary p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        {renderLogo()}
+
+        <Card className="w-full shadow-lg border-0 bg-white/95 backdrop-blur-sm">
+          {renderCardHeader()}
+          {renderCardContent()}
+          {renderFooterActions()}
+        </Card>
+      </div>
     </div>
   );
 }

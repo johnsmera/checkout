@@ -1,6 +1,8 @@
 "use client";
 
 import { redirect } from "next/navigation";
+import { ProtectedLayoutComponent } from "@/components/ProtectedLayout";
+import { ProtectedLayoutSkeleton } from "@/components/ProtectedLayoutSkeleton";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function ProtectedLayout({
@@ -8,11 +10,11 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, storagedUser, logout, isLoading, isLoadingStoragedUser } = useAuth();
+  const { user, storagedUser, isLoading, isLoadingStoragedUser } = useAuth();
 
   // Aguarda o carregamento completo antes de verificar autenticação
   if (isLoading || isLoadingStoragedUser) {
-    return <div>Carregando...</div>;
+    return <ProtectedLayoutSkeleton />;
   }
 
   // Verifica se há usuário autenticado (user ou storagedUser)
@@ -20,20 +22,5 @@ export default function ProtectedLayout({
     redirect("/login");
   }
 
-  return (
-    <>
-      {children}
-
-      <div>
-        <button
-          type="button"
-          onClick={() => {
-            logout();
-          }}
-        >
-          Sair
-        </button>
-      </div>
-    </>
-  );
+  return <ProtectedLayoutComponent>{children}</ProtectedLayoutComponent>;
 }
