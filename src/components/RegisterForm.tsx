@@ -1,8 +1,13 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { InputWithError } from "@/components/ui/input-with-error";
+import { useAuth } from "@/hooks/useAuth";
 import { useRegisterForm } from "@/hooks/useRegisterForm";
 
 export function RegisterForm() {
+  const { signIn } = useAuth();
+  
   const { 
     formData, 
     isLoading, 
@@ -10,7 +15,14 @@ export function RegisterForm() {
     fieldErrors,
     handleInputChange, 
     handleSubmit 
-  } = useRegisterForm();
+  } = useRegisterForm(async ({ name, email, password }) => {
+    // Chama o serviço de registro
+    const { userSingleton } = await import("@/services/user.service");
+    await userSingleton.register({ name, email, password });
+    
+    // Após registro bem-sucedido, faz login automático
+    await signIn({ email, password });
+  });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

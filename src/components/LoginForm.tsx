@@ -1,16 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { InputWithError } from "@/components/ui/input-with-error";
+import { useAuth } from "@/hooks/useAuth";
 import { useLoginForm } from "@/hooks/useLoginForm";
 
 export function LoginForm() {
-  const { 
-    formData, 
-    isLoading, 
-    error, 
+  const { signIn } = useAuth();
+
+  const {
+    formData,
+    isLoading,
+    error,
     fieldErrors,
-    handleInputChange, 
-    handleSubmit 
-  } = useLoginForm();
+    handleInputChange,
+    handleSubmit,
+  } = useLoginForm(async ({ email, password }) => {
+    await signIn({ email, password });
+  });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -32,7 +37,7 @@ export function LoginForm() {
         disabled={isLoading}
         error={fieldErrors.email}
       />
-      
+
       <InputWithError
         id="password"
         name="password"
@@ -45,7 +50,7 @@ export function LoginForm() {
         disabled={isLoading}
         error={fieldErrors.password}
       />
-      
+
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Entrando..." : "Entrar"}
       </Button>

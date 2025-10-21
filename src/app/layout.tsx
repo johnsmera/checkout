@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${lato.variable} antialiased`}>
+      <body className={`${lato.variable} antialiased`} suppressHydrationWarning={true}>
         <ErrorBoundary>
           {children}
         </ErrorBoundary>

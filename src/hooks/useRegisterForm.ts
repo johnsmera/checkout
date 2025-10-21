@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { getErrorMessage } from "@/lib/errors";
 import { isEmailValid } from "@/utils/email";
 
@@ -9,7 +10,10 @@ interface RegisterFormData {
   confirmPassword: string;
 }
 
-export function useRegisterForm() {
+export function useRegisterForm(
+  onSuccess?: ({ name, email, password }: Omit<RegisterFormData, 'confirmPassword'>) => Promise<void>
+) {
+  const router = useRouter();
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
@@ -22,40 +26,41 @@ export function useRegisterForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     setError(null); // Limpa erro geral
-    setFieldErrors(prev => ({
+    setFieldErrors((prev) => ({
       ...prev,
-      [name]: undefined // Limpa erro do campo específico
+      [name]: undefined, // Limpa erro do campo específico
     }));
   };
 
   const validateForm = (): boolean => {
     const { name, email, password, confirmPassword } = formData;
-    
+
     const validations = {
       name: () => {
-        if (!name.trim()) return 'Nome é obrigatório';
+        if (!name.trim()) return "Nome é obrigatório";
         return null;
       },
       email: () => {
-        if (!email.trim()) return 'E-mail é obrigatório';
-        if (!isEmailValid(email)) return 'E-mail inválido';
+        if (!email.trim()) return "E-mail é obrigatório";
+        if (!isEmailValid(email)) return "E-mail inválido";
         return null;
       },
       password: () => {
-        if (!password) return 'Senha é obrigatória';
-        if (password.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
+        if (!password) return "Senha é obrigatória";
+        if (password.length < 6)
+          return "Senha deve ter pelo menos 6 caracteres";
         return null;
       },
       confirmPassword: () => {
-        if (!confirmPassword) return 'Confirmação de senha é obrigatória';
-        if (password !== confirmPassword) return 'As senhas não coincidem';
+        if (!confirmPassword) return "Confirmação de senha é obrigatória";
+        if (password !== confirmPassword) return "As senhas não coincidem";
         return null;
-      }
+      },
     };
 
     const newFieldErrors: Partial<RegisterFormData> = {};
@@ -76,7 +81,7 @@ export function useRegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validação local (usa fieldErrors)
     if (!validateForm()) {
       return;
@@ -87,14 +92,16 @@ export function useRegisterForm() {
     setFieldErrors({}); // Limpa erros de campo
 
     try {
-      // Simula chamada para API de registro
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await onSuccess?.({ 
+        name: formData.name, 
+        email: formData.email, 
+        password: formData.password 
+      });
       
-      // Simula erro para demonstração
-      if (formData.email === 'error@test.com') {
-        throw new Error('Email já está em uso');
-      }
+      // Redireciona para /home após sucesso
+      router.push("/home");
       
+      // Limpa o formulário após sucesso
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
     } catch (error) {
       // Erro da API (usa error geral)

@@ -1,4 +1,6 @@
-import { ApiError, InternalError } from '@/lib/errors';
+"use client";
+
+import { ApiError } from '@/lib/errors';
 
 export interface User {
   email: string;
@@ -15,15 +17,15 @@ export class AuthService {
   async signIn({ email, password }: User): Promise<AuthResponse> {
     // Validação básica
     if (!email || !password) {
-      throw new InternalError('Email e senha são obrigatórios');
+      throw new ApiError('Email e senha são obrigatórios');
     }
 
     if (!email.includes('@')) {
-      throw new InternalError('Email inválido');
+      throw new ApiError('Email inválido');
     }
 
     if (password.length < 6) {
-      throw new InternalError('Senha deve ter pelo menos 6 caracteres');
+      throw new ApiError('Senha deve ter pelo menos 6 caracteres');
     }
 
     // Simula latência de rede

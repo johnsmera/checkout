@@ -1,5 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuth } from "./useAuth";
 import { getErrorMessage } from "@/lib/errors";
 
 interface LoginFormData {
@@ -7,8 +9,10 @@ interface LoginFormData {
   password: string;
 }
 
-export function useLoginForm() {
-  const { signIn } = useAuth();
+export function useLoginForm(
+  onSuccess?: ({ email, password }: LoginFormData) => Promise<void>
+) {
+  const router = useRouter();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -19,31 +23,32 @@ export function useLoginForm() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     setError(null); // Limpa erro geral
-    setFieldErrors(prev => ({
+    setFieldErrors((prev) => ({
       ...prev,
-      [name]: undefined // Limpa erro do campo específico
+      [name]: undefined, // Limpa erro do campo específico
     }));
   };
 
   const validateForm = (): boolean => {
     const { email, password } = formData;
-    
+
     const validations = {
       email: () => {
-        if (!email.trim()) return 'E-mail é obrigatório';
-        if (!/\S+@\S+\.\S+/.test(email)) return 'E-mail inválido';
+        if (!email.trim()) return "E-mail é obrigatório";
+        if (!/\S+@\S+\.\S+/.test(email)) return "E-mail inválido";
         return null;
       },
       password: () => {
-        if (!password) return 'Senha é obrigatória';
-        if (password.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
+        if (!password) return "Senha é obrigatória";
+        if (password.length < 6)
+          return "Senha deve ter pelo menos 6 caracteres";
         return null;
-      }
+      },
     };
 
     const newFieldErrors: Partial<LoginFormData> = {};
@@ -64,7 +69,7 @@ export function useLoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validação local (usa fieldErrors)
     if (!validateForm()) {
       return;
@@ -75,7 +80,8 @@ export function useLoginForm() {
     setFieldErrors({}); // Limpa erros de campo
 
     try {
-      await signIn(formData);
+      await onSuccess?.({ email: formData.email, password: formData.password });
+      router.push("/home");
       setFormData({ email: "", password: "" });
     } catch (error) {
       // Erro da API (usa error geral)
