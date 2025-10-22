@@ -41,7 +41,7 @@ export function AuthContainer() {
     return (
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-foreground">
-          {isLogin ? "Entrar" : "Criar Conta"}
+          {isLogin ? "Fazer login" : "Criar Conta"}
         </CardTitle>
       </CardHeader>
     );

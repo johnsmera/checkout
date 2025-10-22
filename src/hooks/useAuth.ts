@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  authSingleton,
-  type User,
-  type AuthResponse,
-} from "@/services/auth.service";
+import type { User, AuthResponse } from "@/types/auth";
+import { authService } from "@/lib/services";
 import { getErrorMessage } from "@/lib/errors";
 
 interface AuthState {
@@ -30,7 +27,7 @@ export const useAuth = () => {
       setState((prev) => ({ ...prev, isLoading: true }));
       setIsLoadingStoragedUser(true);
 
-      const user = await authSingleton.getCurrentUser();
+      const user = await authService.getCurrentUser();
       setState((prev) => ({
         ...prev,
         user,
@@ -63,7 +60,7 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await authSingleton.signIn({ email, password });
+      const response = await authService.signIn({ email, password });
 
       setState((prev) => ({
         ...prev,
@@ -92,7 +89,7 @@ export const useAuth = () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await authSingleton.logout();
+      const response = await authService.logout();
 
       setState((prev) => ({
         ...prev,

@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ProtectedLayoutSkeleton } from "@/components/ProtectedLayoutSkeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { InMemoryCartRepository } from "@/repositories/implementations/in-memory-cart.repository";
+import { CartProvider } from "@/contexts/CartContext";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
@@ -13,8 +15,8 @@ interface ProtectedLayoutProps {
 export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
   const { user, storagedUser, isLoading, isLoadingStoragedUser } = useAuth();
   const router = useRouter();
+  const repository = new InMemoryCartRepository();
 
-  
   // Aguarda o carregamento completo antes de verificar autenticação
   useEffect(() => {
     if (!isLoading && !isLoadingStoragedUser) {
@@ -23,8 +25,6 @@ export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
       }
     }
   }, [user, storagedUser, isLoading, isLoadingStoragedUser, router]);
-
-  
 
   // Mostra skeleton enquanto verifica autenticação
   if (isLoading || isLoadingStoragedUser) {
@@ -37,11 +37,11 @@ export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <main>
-        {children}
-      </main>
-    </div>
+    <CartProvider repository={repository}>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <main>{children}</main>
+      </div>
+    </CartProvider>
   );
 }

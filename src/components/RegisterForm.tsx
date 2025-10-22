@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { InputWithError } from "@/components/ui/input-with-error";
 import { useAuth } from "@/hooks/useAuth";
 import { useRegisterForm } from "@/hooks/useRegisterForm";
+import { userService } from "@/lib/services";
 
 export function RegisterForm() {
   const { signIn } = useAuth();
@@ -17,8 +18,7 @@ export function RegisterForm() {
     handleSubmit 
   } = useRegisterForm(async ({ name, email, password }) => {
     // Chama o serviço de registro
-    const { userSingleton } = await import("@/services/user.service");
-    await userSingleton.register({ name, email, password });
+    await userService.register({ name, email, password });
     
     // Após registro bem-sucedido, faz login automático
     await signIn({ email, password });
