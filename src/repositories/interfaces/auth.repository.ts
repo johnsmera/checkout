@@ -1,9 +1,8 @@
-import type { User, LoginRequest } from "@/types/auth";
+import type { User } from "@/types/auth";
 
 export interface AuthRepository {
-  login(request: LoginRequest): Promise<User>;
-  logout(): Promise<void>;
+  // Responsabilidade: Gerenciar sessão do usuário atual
   getCurrentUser(): Promise<User | null>;
-  saveUser(user: User): Promise<void>;
-  removeUser(): Promise<void>;
+  saveCurrentUser(user: User): Promise<void>;
+  clearCurrentUser(): Promise<void>;
 }

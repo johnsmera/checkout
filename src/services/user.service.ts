@@ -26,23 +26,28 @@ export class UserService {
     }
 
     // Simula latência de rede
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Simula erro da API
-    if (request.email === "error@test.com") {
-      throw new ApiError("Email já está em uso");
-    }
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Simula erro de servidor (regra de negócio para demonstração)
     if (request.email === "server@error.com") {
       throw new InternalError("Erro interno do servidor. Tente novamente.");
     }
 
+    // Service faz as validações de negócio
+    const existingUser = await this.repository.findByEmail(request.email);
+    if (existingUser) {
+      throw new ApiError("Email já está em uso");
+    }
+
+    // Repository apenas persiste
     const user = await this.repository.register(request);
     return {
       success: true,
       message: "Usuário registrado com sucesso",
-      user,
+      user: {
+        email: user.email,
+        password: user.password,
+      },
     };
   }
 }

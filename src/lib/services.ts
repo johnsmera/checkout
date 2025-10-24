@@ -2,13 +2,13 @@
 
 import { createAuthService } from "@/services/auth.service";
 import { createUserService } from "@/services/user.service";
-import { LocalStorageAuthRepository } from "@/repositories/implementations/local-storage-auth.repository";
 import { LocalStorageUserRepository } from "@/repositories/implementations/local-storage-user.repository";
+import { LocalStorageAuthRepository } from "@/repositories/implementations/local-storage-auth.repository";
 
 // Criando repositórios
-const authRepository = new LocalStorageAuthRepository();
 const userRepository = new LocalStorageUserRepository();
+const authRepository = new LocalStorageAuthRepository();
 
 // Criando instâncias dos serviços
-export const authService = createAuthService(authRepository);
+export const authService = createAuthService(userRepository, authRepository);
 export const userService = createUserService(userRepository);
