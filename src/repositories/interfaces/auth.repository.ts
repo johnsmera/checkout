@@ -1,4 +1,4 @@
-import type { User, LoginRequest } from '@/types/auth';
+import type { User, LoginRequest } from "@/types/auth";
 
 export interface AuthRepository {
   login(request: LoginRequest): Promise<User>;

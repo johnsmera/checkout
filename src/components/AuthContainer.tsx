@@ -46,6 +46,7 @@ export function AuthContainer() {
       </CardHeader>
     );
   };
+
   const renderLogo = () => {
     return (
       <div className="mb-8 flex justify-center">

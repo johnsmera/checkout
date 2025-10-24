@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { getErrorMessage } from "@/lib/errors";
 
 interface LoginFormData {
@@ -10,7 +10,7 @@ interface LoginFormData {
 }
 
 export function useLoginForm(
-  onSuccess?: ({ email, password }: LoginFormData) => Promise<void>
+  onSuccess?: ({ email, password }: LoginFormData) => Promise<void>,
 ) {
   const router = useRouter();
   const [formData, setFormData] = useState<LoginFormData>({
@@ -21,20 +21,23 @@ export function useLoginForm(
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Partial<LoginFormData>>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setError(null); // Limpa erro geral
-    setFieldErrors((prev) => ({
-      ...prev,
-      [name]: undefined, // Limpa erro do campo específico
-    }));
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setError(null); // Limpa erro geral
+      setFieldErrors((prev) => ({
+        ...prev,
+        [name]: undefined, // Limpa erro do campo específico
+      }));
+    },
+    [],
+  );
 
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const { email, password } = formData;
 
     const validations = {
@@ -65,45 +68,62 @@ export function useLoginForm(
 
     setFieldErrors(newFieldErrors);
     return !hasErrors;
-  };
+  }, [formData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Validação local (usa fieldErrors)
-    if (!validateForm()) {
-      return;
-    }
+      // Validação local (usa fieldErrors)
+      if (!validateForm()) {
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null); // Limpa erro geral
-    setFieldErrors({}); // Limpa erros de campo
+      setIsLoading(true);
+      setError(null); // Limpa erro geral
+      setFieldErrors({}); // Limpa erros de campo
 
-    try {
-      await onSuccess?.({ email: formData.email, password: formData.password });
-      router.push("/home");
-      setFormData({ email: "", password: "" });
-    } catch (error) {
-      // Erro da API (usa error geral)
-      setError(getErrorMessage(error));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        await onSuccess?.({
+          email: formData.email,
+          password: formData.password,
+        });
+        router.push("/home");
+        setFormData({ email: "", password: "" });
+      } catch (error) {
+        // Erro da API (usa error geral)
+        setError(getErrorMessage(error));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData, onSuccess, router, validateForm],
+  );
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData({ email: "", password: "" });
     setError(null);
     setFieldErrors({});
-  };
+  }, []);
 
-  return {
-    formData,
-    isLoading,
-    error,
-    fieldErrors,
-    handleInputChange,
-    handleSubmit,
-    resetForm,
-  };
+  return useMemo(
+    () => ({
+      formData,
+      isLoading,
+      error,
+      fieldErrors,
+      handleInputChange,
+      handleSubmit,
+      resetForm,
+    }),
+    [
+      formData,
+      isLoading,
+      error,
+      fieldErrors,
+      handleInputChange,
+      handleSubmit,
+      resetForm,
+    ],
+  );
 }

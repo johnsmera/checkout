@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useMemo } from "react";
 import { getErrorMessage } from "@/lib/errors";
 import { isEmailValid } from "@/utils/email";
 
@@ -11,9 +10,12 @@ interface RegisterFormData {
 }
 
 export function useRegisterForm(
-  onSuccess?: ({ name, email, password }: Omit<RegisterFormData, 'confirmPassword'>) => Promise<void>
+  onSuccess?: ({
+    name,
+    email,
+    password,
+  }: Omit<RegisterFormData, "confirmPassword">) => Promise<void>,
 ) {
-  const router = useRouter();
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
@@ -24,20 +26,23 @@ export function useRegisterForm(
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Partial<RegisterFormData>>({});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setError(null); // Limpa erro geral
-    setFieldErrors((prev) => ({
-      ...prev,
-      [name]: undefined, // Limpa erro do campo específico
-    }));
-  };
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      setError(null); // Limpa erro geral
+      setFieldErrors((prev) => ({
+        ...prev,
+        [name]: undefined, // Limpa erro do campo específico
+      }));
+    },
+    [],
+  );
 
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const { name, email, password, confirmPassword } = formData;
 
     const validations = {
@@ -77,53 +82,67 @@ export function useRegisterForm(
 
     setFieldErrors(newFieldErrors);
     return !hasErrors;
-  };
+  }, [formData]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    // Validação local (usa fieldErrors)
-    if (!validateForm()) {
-      return;
-    }
+      // Validação local (usa fieldErrors)
+      if (!validateForm()) {
+        return;
+      }
 
-    setIsLoading(true);
-    setError(null); // Limpa erro geral
-    setFieldErrors({}); // Limpa erros de campo
+      setIsLoading(true);
+      setError(null); // Limpa erro geral
+      setFieldErrors({}); // Limpa erros de campo
 
-    try {
-      await onSuccess?.({ 
-        name: formData.name, 
-        email: formData.email, 
-        password: formData.password 
-      });
-      
-      // Redireciona para /home após sucesso
-      router.push("/home");
-      
-      // Limpa o formulário após sucesso
-      setFormData({ name: "", email: "", password: "", confirmPassword: "" });
-    } catch (error) {
-      // Erro da API (usa error geral)
-      setError(getErrorMessage(error));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      try {
+        await onSuccess?.({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        });
 
-  const resetForm = () => {
+        // Redireciona para /home após sucesso
+       
+
+        // Limpa o formulário após sucesso
+        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+      } catch (error) {
+        // Erro da API (usa error geral)
+        setError(getErrorMessage(error));
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData, onSuccess, validateForm],
+  );
+
+  const resetForm = useCallback(() => {
     setFormData({ name: "", email: "", password: "", confirmPassword: "" });
     setError(null);
     setFieldErrors({});
-  };
+  }, []);
 
-  return {
-    formData,
-    isLoading,
-    error,
-    fieldErrors,
-    handleInputChange,
-    handleSubmit,
-    resetForm,
-  };
+  return useMemo(
+    () => ({
+      formData,
+      isLoading,
+      error,
+      fieldErrors,
+      handleInputChange,
+      handleSubmit,
+      resetForm,
+    }),
+    [
+      formData,
+      isLoading,
+      error,
+      fieldErrors,
+      handleInputChange,
+      handleSubmit,
+      resetForm,
+    ],
+  );
 }

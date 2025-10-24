@@ -1,12 +1,12 @@
-import type { AuthRepository } from '../interfaces/auth.repository';
-import type { User, LoginRequest } from '@/types/auth';
+import type { AuthRepository } from "../interfaces/auth.repository";
+import type { User, LoginRequest } from "@/types/auth";
 
 export class LocalStorageAuthRepository implements AuthRepository {
   async login(request: LoginRequest): Promise<User> {
     // Repository só persiste - retorna apenas a entidade
     const user: User = {
       email: request.email,
-      password: request.password
+      password: request.password,
     };
 
     await this.saveUser(user);
@@ -18,7 +18,7 @@ export class LocalStorageAuthRepository implements AuthRepository {
   }
 
   async getCurrentUser(): Promise<User | null> {
-    if (typeof window === 'undefined' || !window.localStorage) {
+    if (typeof window === "undefined" || !window.localStorage) {
       return null;
     }
 
@@ -31,13 +31,13 @@ export class LocalStorageAuthRepository implements AuthRepository {
   }
 
   async saveUser(user: User): Promise<void> {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage) {
       window.localStorage.setItem("user", JSON.stringify(user));
     }
   }
 
   async removeUser(): Promise<void> {
-    if (typeof window !== 'undefined' && window.localStorage) {
+    if (typeof window !== "undefined" && window.localStorage) {
       window.localStorage.removeItem("user");
     }
   }

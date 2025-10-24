@@ -1,4 +1,9 @@
-import type { Cart, CartItem, AddToCartRequest, UpdateCartItemRequest } from '@/types/cart';
+import type {
+  Cart,
+  CartItem,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+} from "@/types/cart";
 
 export interface CartRepository {
   getCart(): Promise<Cart>;

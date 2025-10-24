@@ -7,11 +7,11 @@ interface LogoProps {
   variant?: "default" | "compact";
 }
 
-export function Logo({ 
-  className = "", 
-  width = 200, 
-  height = 42, 
-  variant = "default"
+export function Logo({
+  className = "",
+  width = 200,
+  height = 42,
+  variant = "default",
 }: LogoProps) {
   const logoWidth = variant === "compact" ? 120 : width;
   const logoHeight = variant === "compact" ? 25 : height;

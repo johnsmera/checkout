@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/card";
 import type { Product } from "@/types/product";
 import { formatPrice } from "@/utils/amount";
+import { useCart } from "@/contexts/CartContext";
+import { Check } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +18,10 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { cart } = useCart();
+
+  // Verifica se o produto já está no carrinho
+  const isInCart = cart.items.some((item) => item.productId === product.id);
   return (
     <Card className="h-full flex flex-col p-0 overflow-hidden">
       <div className="relative h-48 w-full overflow-hidden">
@@ -39,9 +45,16 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           {formatPrice(product.price)}
         </div>
 
-        <Button className="w-full" onClick={() => onAddToCart(product.id)}>
-          Adicionar ao Carrinho
-        </Button>
+        {isInCart ? (
+          <Button className="w-full" disabled>
+            <Check className="h-4 w-4 mr-2" />
+            Adicionado
+          </Button>
+        ) : (
+          <Button className="w-full" onClick={() => onAddToCart(product.id)}>
+            Adicionar ao Carrinho
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

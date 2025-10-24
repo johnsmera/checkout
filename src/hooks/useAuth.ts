@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { User, AuthResponse } from "@/types/auth";
 import { authService } from "@/lib/services";
 import { getErrorMessage } from "@/lib/errors";
@@ -56,36 +56,39 @@ export const useAuth = () => {
     loadCurrentUser();
   }, []);
 
-  const signIn = async ({ email, password }: User): Promise<AuthResponse> => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+  const signIn = useCallback(
+    async ({ email, password }: User): Promise<AuthResponse> => {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-    try {
-      const response = await authService.signIn({ email, password });
+      try {
+        const response = await authService.signIn({ email, password });
 
-      setState((prev) => ({
-        ...prev,
-        user: response.user || null,
-        isLoading: false,
-      }));
+        setState((prev) => ({
+          ...prev,
+          user: response.user || null,
+          isLoading: false,
+        }));
 
-      // Atualiza o storagedUser após login bem-sucedido
-      if (response.user) {
-        setStoragedUser(response.user);
+        // Atualiza o storagedUser após login bem-sucedido
+        if (response.user) {
+          setStoragedUser(response.user);
+        }
+
+        return response;
+      } catch (error) {
+        const errorMessage = getErrorMessage(error);
+        setState((prev) => ({
+          ...prev,
+          error: errorMessage,
+          isLoading: false,
+        }));
+        throw error;
       }
+    },
+    [],
+  );
 
-      return response;
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      setState((prev) => ({
-        ...prev,
-        error: errorMessage,
-        isLoading: false,
-      }));
-      throw error;
-    }
-  };
-
-  const logout = async (): Promise<AuthResponse> => {
+  const logout = useCallback(async (): Promise<AuthResponse> => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
@@ -110,18 +113,21 @@ export const useAuth = () => {
       }));
       throw error;
     }
-  };
+  }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
-  };
+  }, []);
 
-  return {
-    ...state,
-    storagedUser,
-    isLoadingStoragedUser,
-    signIn,
-    logout,
-    clearError,
-  };
+  return useMemo(
+    () => ({
+      ...state,
+      storagedUser,
+      isLoadingStoragedUser,
+      signIn,
+      logout,
+      clearError,
+    }),
+    [state, storagedUser, isLoadingStoragedUser, signIn, logout, clearError],
+  );
 };

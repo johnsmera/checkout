@@ -1,8 +1,19 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import type { CartRepository } from '@/repositories/interfaces/cart.repository';
-import type { Cart, AddToCartRequest, UpdateCartItemRequest } from '@/types/cart';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import type { CartRepository } from "@/repositories/interfaces/cart.repository";
+import type {
+  Cart,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+} from "@/types/cart";
 
 interface CartContextType {
   cart: Cart;
@@ -34,7 +45,9 @@ export function CartProvider({ children, repository }: CartProviderProps) {
       const updatedCart = await repository.getCart();
       setCart(updatedCart);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao carregar carrinho');
+      setError(
+        err instanceof Error ? err.message : "Erro ao carregar carrinho",
+      );
     } finally {
       setLoading(false);
     }
@@ -47,7 +60,7 @@ export function CartProvider({ children, repository }: CartProviderProps) {
       await repository.addItem(request);
       await refreshCart();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao adicionar item');
+      setError(err instanceof Error ? err.message : "Erro ao adicionar item");
     } finally {
       setLoading(false);
     }
@@ -60,7 +73,7 @@ export function CartProvider({ children, repository }: CartProviderProps) {
       await repository.updateItem(request);
       await refreshCart();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao atualizar item');
+      setError(err instanceof Error ? err.message : "Erro ao atualizar item");
     } finally {
       setLoading(false);
     }
@@ -73,7 +86,7 @@ export function CartProvider({ children, repository }: CartProviderProps) {
       await repository.removeItem(itemId);
       await refreshCart();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao remover item');
+      setError(err instanceof Error ? err.message : "Erro ao remover item");
     } finally {
       setLoading(false);
     }
@@ -86,7 +99,7 @@ export function CartProvider({ children, repository }: CartProviderProps) {
       await repository.clearCart();
       await refreshCart();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao limpar carrinho');
+      setError(err instanceof Error ? err.message : "Erro ao limpar carrinho");
     } finally {
       setLoading(false);
     }
@@ -104,20 +117,16 @@ export function CartProvider({ children, repository }: CartProviderProps) {
     updateItem,
     removeItem,
     clearCart,
-    refreshCart
+    refreshCart,
   };
 
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
-    throw new Error('useCart deve ser usado dentro de um CartProvider');
+    throw new Error("useCart deve ser usado dentro de um CartProvider");
   }
   return context;
 }

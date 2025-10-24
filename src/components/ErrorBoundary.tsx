@@ -11,9 +11,7 @@ interface ErrorBoundaryProps {
 export function ErrorBoundary({ children }: ErrorBoundaryProps) {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <ErrorCatcher>
-        {children}
-      </ErrorCatcher>
+      <ErrorCatcher>{children}</ErrorCatcher>
     </Suspense>
   );
 }
@@ -44,7 +42,7 @@ function ErrorFallback({ error }: { error: Error }) {
   };
 
   const handleGoHome = () => {
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -81,4 +79,3 @@ function ErrorFallback({ error }: { error: Error }) {
     </div>
   );
 }
-

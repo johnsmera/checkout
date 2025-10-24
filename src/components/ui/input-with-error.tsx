@@ -2,7 +2,8 @@ import { forwardRef } from "react";
 import { Input } from "./input";
 import { Label } from "./label";
 
-interface InputWithErrorProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputWithErrorProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   id: string;
@@ -19,12 +20,10 @@ export const InputWithError = forwardRef<HTMLInputElement, InputWithErrorProps>(
           className={`${error ? "border-red-500" : ""} ${className || ""}`}
           {...props}
         />
-        {error && (
-          <p className="text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 InputWithError.displayName = "InputWithError";

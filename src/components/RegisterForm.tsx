@@ -5,23 +5,25 @@ import { InputWithError } from "@/components/ui/input-with-error";
 import { useAuth } from "@/hooks/useAuth";
 import { useRegisterForm } from "@/hooks/useRegisterForm";
 import { userService } from "@/lib/services";
+import { useRouter } from "next/navigation";
 
 export function RegisterForm() {
   const { signIn } = useAuth();
-  
-  const { 
-    formData, 
-    isLoading, 
-    error, 
+  const router = useRouter();
+  const {
+    formData,
+    isLoading,
+    error,
     fieldErrors,
-    handleInputChange, 
-    handleSubmit 
+    handleInputChange,
+    handleSubmit,
   } = useRegisterForm(async ({ name, email, password }) => {
     // Chama o serviço de registro
     await userService.register({ name, email, password });
-    
+
     // Após registro bem-sucedido, faz login automático
     await signIn({ email, password });
+    router.push("/home");
   });
 
   return (
@@ -47,7 +49,7 @@ export function RegisterForm() {
         disabled={isLoading}
         error={fieldErrors.name}
       />
-      
+
       <InputWithError
         id="email"
         name="email"
@@ -60,7 +62,7 @@ export function RegisterForm() {
         disabled={isLoading}
         error={fieldErrors.email}
       />
-      
+
       <InputWithError
         id="password"
         name="password"
@@ -73,7 +75,7 @@ export function RegisterForm() {
         disabled={isLoading}
         error={fieldErrors.password}
       />
-      
+
       <InputWithError
         id="confirmPassword"
         name="confirmPassword"
@@ -86,7 +88,7 @@ export function RegisterForm() {
         disabled={isLoading}
         error={fieldErrors.confirmPassword}
       />
-      
+
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Criando conta..." : "Criar Conta"}
       </Button>

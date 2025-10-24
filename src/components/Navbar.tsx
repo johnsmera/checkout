@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { CartIcon } from "@/components/CartIcon";
 
 export function Navbar() {
   const { user, storagedUser, logout, isLoading } = useAuth();
@@ -30,13 +31,9 @@ export function Navbar() {
             <Logo variant="compact" />
           </div>
 
-          {/* User info and logout */}
+          {/* User info, cart and logout */}
           <div className="flex items-center space-x-4">
-            {currentUser && (
-              <span className="text-sm text-secondary-foreground">
-                Olá, {currentUser?.email || "Usuário"}
-              </span>
-            )}
+            <CartIcon />
             <Button
               variant="outline"
               size="sm"

@@ -1,8 +1,8 @@
 "use client";
 
-import type { AuthRepository } from '@/repositories/interfaces/auth.repository';
-import type { User, LoginRequest, AuthResponse } from '@/types/auth';
-import { ApiError } from '@/lib/errors';
+import type { AuthRepository } from "@/repositories/interfaces/auth.repository";
+import type { User, LoginRequest, AuthResponse } from "@/types/auth";
+import { ApiError } from "@/lib/errors";
 
 export class AuthService {
   constructor(private repository: AuthRepository) {}
@@ -10,23 +10,23 @@ export class AuthService {
   async signIn(credentials: LoginRequest): Promise<AuthResponse> {
     // Validações - responsabilidade do Service
     if (!credentials.email || !credentials.password) {
-      throw new ApiError('Email e senha são obrigatórios');
+      throw new ApiError("Email e senha são obrigatórios");
     }
 
-    if (!credentials.email.includes('@')) {
-      throw new ApiError('Email inválido');
+    if (!credentials.email.includes("@")) {
+      throw new ApiError("Email inválido");
     }
 
     if (credentials.password.length < 6) {
-      throw new ApiError('Senha deve ter pelo menos 6 caracteres');
+      throw new ApiError("Senha deve ter pelo menos 6 caracteres");
     }
 
     // Simula latência de rede (lógica de negócio)
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Simula erro da API (regra de negócio para demonstração)
-    if (credentials.email === 'error@test.com') {
-      throw new ApiError('Credenciais inválidas');
+    if (credentials.email === "error@test.com") {
+      throw new ApiError("Credenciais inválidas");
     }
 
     // Delega apenas a persistência para o repository
@@ -36,13 +36,13 @@ export class AuthService {
     return {
       success: true,
       message: "Login realizado com sucesso",
-      user
+      user,
     };
   }
 
   async logout(): Promise<AuthResponse> {
     // Simula latência de rede (lógica de negócio)
-    await new Promise(resolve => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     // Delega apenas a persistência para o repository
     await this.repository.logout();

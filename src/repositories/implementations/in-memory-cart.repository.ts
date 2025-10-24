@@ -1,10 +1,15 @@
-import type { CartRepository } from '../interfaces/cart.repository';
-import type { Cart, CartItem, AddToCartRequest, UpdateCartItemRequest } from '@/types/cart';
+import type { CartRepository } from "../interfaces/cart.repository";
+import type {
+  Cart,
+  CartItem,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+} from "@/types/cart";
 
 export class InMemoryCartRepository implements CartRepository {
   private cart: Cart = {
     items: [],
-    total: 0
+    total: 0,
   };
 
   async getCart(): Promise<Cart> {
@@ -13,7 +18,7 @@ export class InMemoryCartRepository implements CartRepository {
 
   async addItem(request: AddToCartRequest): Promise<CartItem> {
     const existingItem = this.cart.items.find(
-      item => item.productId === request.productId
+      (item) => item.productId === request.productId,
     );
 
     if (existingItem) {
@@ -23,7 +28,7 @@ export class InMemoryCartRepository implements CartRepository {
         id: crypto.randomUUID(),
         productId: request.productId,
         quantity: request.quantity,
-        price: request.price
+        price: request.price,
       };
       this.cart.items.push(newItem);
     }
@@ -33,10 +38,10 @@ export class InMemoryCartRepository implements CartRepository {
   }
 
   async updateItem(request: UpdateCartItemRequest): Promise<CartItem> {
-    const item = this.cart.items.find(item => item.id === request.itemId);
-    
+    const item = this.cart.items.find((item) => item.id === request.itemId);
+
     if (!item) {
-      throw new Error('Item não encontrado no carrinho');
+      throw new Error("Item não encontrado no carrinho");
     }
 
     item.quantity = request.quantity;
@@ -45,21 +50,21 @@ export class InMemoryCartRepository implements CartRepository {
   }
 
   async removeItem(itemId: string): Promise<void> {
-    this.cart.items = this.cart.items.filter(item => item.id !== itemId);
+    this.cart.items = this.cart.items.filter((item) => item.id !== itemId);
     this.calculateTotal();
   }
 
   async clearCart(): Promise<void> {
     this.cart = {
       items: [],
-      total: 0
+      total: 0,
     };
   }
 
   private calculateTotal(): void {
     this.cart.total = this.cart.items.reduce(
-      (total, item) => total + (item.price * item.quantity),
-      0
+      (total, item) => total + item.price * item.quantity,
+      0,
     );
   }
 }
