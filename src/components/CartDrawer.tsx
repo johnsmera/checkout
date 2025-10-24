@@ -46,7 +46,15 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>
       <DrawerContent className="flex flex-col h-full">
-        <DrawerHeader className="flex-shrink-0">
+        <DrawerHeader className="flex-shrink-0 relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="absolute right-4 top-4 h-8 w-8 p-0 hover:bg-gray-100"
+          >
+            <X className="h-4 w-4" />
+          </Button>
           <DrawerTitle>Carrinho</DrawerTitle>
           <DrawerDescription>
             {totalItems} {itemCountText}
