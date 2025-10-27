@@ -1,5 +1,7 @@
 # 🍯 Colmeia Checkout
 
+Demo: https://checkout-ex.vercel.app/
+
 Sistema de checkout e-commerce desenvolvido com Next.js 15, React 19 e TypeScript, seguindo princípios enterprise de arquitetura limpa e padrões de desenvolvimento.
 
 ## 🚀 Como Rodar o Projeto
