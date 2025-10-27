@@ -200,7 +200,7 @@ export class InMemoryOrderRepository implements OrderRepository {
     if (firstDigit === "3") return "Amex";
     if (firstDigit === "6") return "Discover";
 
-    return "Desconhecida";
+    return "Bandeira desconhecida";
   }
 
   private async simulateLatency(min: number, max: number): Promise<void> {
