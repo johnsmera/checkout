@@ -1,7 +1,6 @@
-import { CheckCircle, Copy } from "lucide-react";
+import { CheckCircle, Copy, QrCode } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import { formatPrice } from "@/utils/amount";
 import { formatBoletoBarCode, formatPixCode } from "@/utils/payment";
 import type { Order } from "@/types/order";
@@ -53,13 +52,8 @@ export function OrderSuccess({ order, onBackToHome }: OrderSuccessProps) {
             Escaneie o QR Code para pagar
           </h3>
           <div className="flex justify-center">
-            <div className="bg-white p-4 rounded-lg">
-              <Image
-                src={order.paymentDetails.pix.qrCode}
-                alt="QR Code PIX"
-                width={200}
-                height={200}
-              />
+            <div className="bg-white p-6 rounded-lg border-2 border-dashed border-blue-300">
+              <QrCode className="w-48 h-48 text-black-600" />
             </div>
           </div>
           <div className="space-y-2">
