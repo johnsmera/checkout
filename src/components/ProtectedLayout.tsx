@@ -6,8 +6,11 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ProtectedLayoutSkeleton } from "@/components/ProtectedLayoutSkeleton";
 import { useAuth } from "@/hooks/useAuth";
-import { InMemoryCartRepository } from "@/repositories/implementations/in-memory-cart.repository";
-import { CartProvider } from "@/contexts/CartContext";
+import { CartProvider, useCart } from "@/contexts/CartContext";
+import { OrderProvider } from "@/contexts/OrderContext";
+import { cartRepository, orderRepository } from "@/lib/services";
+import type { OrderRepository } from "@/repositories/interfaces/order.repository";
+import type { CartRepository } from "@/repositories/interfaces/cart.repository";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
@@ -16,7 +19,6 @@ interface ProtectedLayoutProps {
 export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
   const { user, storagedUser, isLoading, isLoadingStoragedUser } = useAuth();
   const router = useRouter();
-  const repository = new InMemoryCartRepository();
 
   // Aguarda o carregamento completo antes de verificar autenticação
   useEffect(() => {
@@ -38,12 +40,40 @@ export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
   }
 
   return (
-    <CartProvider repository={repository}>
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <Navbar />
-        <main className="flex-1 pb-8">{children}</main>
-        <Footer />
-      </div>
+    <CartProvider repository={cartRepository}>
+      <OrderProviderWrapper
+        orderRepository={orderRepository}
+        cartRepository={cartRepository}
+      >
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+          <Navbar />
+          <main className="flex-1 pb-8">{children}</main>
+          <Footer />
+        </div>
+      </OrderProviderWrapper>
     </CartProvider>
+  );
+}
+
+// Wrapper para acessar o CartContext
+function OrderProviderWrapper({
+  children,
+  orderRepository,
+  cartRepository,
+}: {
+  children: React.ReactNode;
+  orderRepository: OrderRepository;
+  cartRepository: CartRepository;
+}) {
+  const { clearCart } = useCart();
+
+  return (
+    <OrderProvider
+      orderRepository={orderRepository}
+      cartRepository={cartRepository}
+      onClearCart={clearCart}
+    >
+      {children}
+    </OrderProvider>
   );
 }

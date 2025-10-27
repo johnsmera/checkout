@@ -2,6 +2,7 @@
 
 import { Plus, Minus, X } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/utils/amount";
@@ -163,7 +164,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="font-medium text-lg">Total:</span>
               <span className="font-bold text-lg">{formatPrice(total)}</span>
             </div>
-            <Button className="w-full">Finalizar Compra</Button>
+            <Button className="w-full" asChild onClick={onClose}>
+              <Link href="/checkout">Finalizar Compra</Link>
+            </Button>
           </DrawerFooter>
         )}
       </DrawerContent>
