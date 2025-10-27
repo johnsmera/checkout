@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { ProtectedLayoutSkeleton } from "@/components/ProtectedLayoutSkeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { InMemoryCartRepository } from "@/repositories/implementations/in-memory-cart.repository";
@@ -38,9 +39,10 @@ export function ProtectedLayoutComponent({ children }: ProtectedLayoutProps) {
 
   return (
     <CartProvider repository={repository}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex flex-col">
         <Navbar />
-        <main>{children}</main>
+        <main className="flex-1 pb-8">{children}</main>
+        <Footer />
       </div>
     </CartProvider>
   );

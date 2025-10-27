@@ -31,16 +31,12 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     handleUpdateQuantity,
     loading,
   } = useCartOperations();
-  
-  const {
-    handleQuantityChange,
-    handleQuantityBlur,
-    getDisplayQuantity,
-  } = useCartQuantityEditing();
-  
+
+  const { handleQuantityChange, handleQuantityBlur, getDisplayQuantity } =
+    useCartQuantityEditing();
+
   const { getProductData } = useCartProductData();
   const { totalItems, total, isEmpty, items } = useCartSummary();
-
 
   const itemCountText = totalItems === 1 ? "item" : "itens";
   return (
@@ -118,7 +114,11 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                                 handleQuantityChange(item.id, e.target.value)
                               }
                               onBlur={() =>
-                                handleQuantityBlur(item.id, item.quantity, handleUpdateQuantity)
+                                handleQuantityBlur(
+                                  item.id,
+                                  item.quantity,
+                                  handleUpdateQuantity
+                                )
                               }
                               className="w-10 h-6 text-center border-0 focus:ring-0 text-xs [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                               style={{ textAlign: "center" }}
@@ -161,9 +161,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <DrawerFooter className="flex-shrink-0 border-t bg-background">
             <div className="flex justify-between items-center mb-3">
               <span className="font-medium text-lg">Total:</span>
-              <span className="font-bold text-lg">
-                {formatPrice(total)}
-              </span>
+              <span className="font-bold text-lg">{formatPrice(total)}</span>
             </div>
             <Button className="w-full">Finalizar Compra</Button>
           </DrawerFooter>

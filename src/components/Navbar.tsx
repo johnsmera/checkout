@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { CartIcon } from "@/components/CartIcon";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export function Navbar() {
   const { logout, isLoading } = useAuth();
@@ -21,7 +22,6 @@ export function Navbar() {
       console.error("Erro ao fazer logout:", error);
     }
   };
-
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -53,11 +53,9 @@ export function Navbar() {
         })}
       </div>
 
-      <nav 
-        className="relative overflow-hidden bg-secondary shadow-xl shadow-black/20 border-b border-black/5"
-      >
+      <nav className="relative overflow-hidden bg-secondary shadow-xl shadow-black/20 border-b border-black/5">
         {/* Efeito de brilho animado */}
-        <div 
+        <div
           className="absolute inset-0 opacity-30"
           style={{
             background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, 
@@ -67,15 +65,16 @@ export function Navbar() {
             transition: "all 0.3s ease-out",
           }}
         />
-        
+
         {/* Efeito de glassmorphism */}
         <div className="absolute inset-0 bg-white/5 backdrop-blur-sm" />
-        
+
         {/* Borda inferior com gradiente */}
-        <div 
+        <div
           className="absolute bottom-0 left-0 w-full h-px"
           style={{
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)",
+            background:
+              "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)",
             animation: "shimmer 3s ease-in-out infinite",
           }}
         />
@@ -85,7 +84,9 @@ export function Navbar() {
             {/* Logo com efeito hover */}
             <div className="flex-shrink-0 group">
               <div className="transform transition-all duration-300 group-hover:scale-105 group-hover:rotate-1">
-                <Logo variant="compact" />
+                <Link href="/home">
+                  <Logo variant="compact" />
+                </Link>
               </div>
             </div>
 
@@ -103,7 +104,7 @@ export function Navbar() {
               >
                 {/* Efeito de brilho no botão */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                <ArrowLeft className="relative z-10" /> 
+                <ArrowLeft className="relative z-10" />
                 <span className="relative z-10">
                   {isLoading ? "Saindo..." : "Sair"}
                 </span>

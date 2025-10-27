@@ -57,7 +57,7 @@ export const useAuth = () => {
   }, []);
 
   const signIn = useCallback(
-    async ({ email, password }: User): Promise<AuthResponse> => {
+    async ({ email, password }: { email: string; password: string }): Promise<AuthResponse> => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
       try {

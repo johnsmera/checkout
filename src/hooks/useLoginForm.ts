@@ -89,7 +89,6 @@ export function useLoginForm(
           password: formData.password,
         });
         router.push("/home");
-        setFormData({ email: "", password: "" });
       } catch (error) {
         // Erro da API (usa error geral)
         setError(getErrorMessage(error));
