@@ -43,27 +43,44 @@ export function PaymentMethodSelector({
           <Card
             key={method.id}
             className={`
-              cursor-pointer transition-all hover:shadow-md
-              ${isSelected ? "border-primary border-2 bg-primary/5" : "border-gray-200"}
+              group cursor-pointer transition-all duration-300 ease-in-out
+              hover:shadow-lg hover:shadow-primary/10 hover:scale-[1.02]
+              hover:border-primary/50 hover:bg-primary/5
+              ${isSelected 
+                ? "border-primary border-2 bg-primary/10 shadow-md shadow-primary/20" 
+                : "border-border hover:border-primary/30"
+              }
             `}
           >
             <Button
               variant="ghost"
-              className="w-full h-auto p-0"
+              className="w-full h-auto p-0 hover:bg-transparent"
               onClick={() => onSelectMethod(method.id)}
               aria-pressed={isSelected}
             >
               <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
                 <Icon
-                  className={`w-10 h-10 ${isSelected ? "text-primary" : "text-gray-500"}`}
+                  className={`
+                    w-10 h-10 transition-colors duration-300 ease-in-out
+                    ${isSelected 
+                      ? "text-primary" 
+                      : "text-muted-foreground group-hover:text-primary/70"
+                    }
+                  `}
                 />
                 <div>
                   <h3
-                    className={`font-semibold ${isSelected ? "text-primary" : "text-foreground"}`}
+                    className={`
+                      font-semibold transition-colors duration-300 ease-in-out
+                      ${isSelected 
+                        ? "text-primary" 
+                        : "text-foreground group-hover:text-primary/80"
+                      }
+                    `}
                   >
                     {method.label}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground group-hover:text-muted-foreground/80 transition-colors duration-300">
                     {method.description}
                   </p>
                 </div>
